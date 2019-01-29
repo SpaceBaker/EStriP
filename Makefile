@@ -3,7 +3,7 @@
 # project subdirectory.
 #
 
-PROJECT_NAME := apa102
+PROJECT_NAME := EStriP
 
 include $(IDF_PATH)/make/project.mk
 
