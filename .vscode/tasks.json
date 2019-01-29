@@ -13,8 +13,7 @@
             "type": "shell",
             "command": "make",
             "args": [
-                "-j8",
-                "all"
+                "-j8"
             ]
         },
         {
@@ -32,6 +31,17 @@
             "command": "make",
             "args": [
                 "-j8",
+                "monitor"
+            ]
+        },
+        {
+            "label": "all",
+            "type": "shell",
+            "command": "make",
+            "args": [
+                "-j8",
+                "all",
+                "flash",
                 "monitor"
             ]
         }
