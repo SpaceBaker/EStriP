@@ -1,46 +1,40 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <sdkconfig.h>
-#include "spi.h"
+#include <string.h>
+#include "apa102.h"
 
 
-#define MOSI_PIN 23
-#define SCLK_PIN 18
-#define LED_NUM  60
+/****************************************
+ *              TODO                    *
+ * Define all possible modes and what   *
+ *  they do.                            *
+ *                                      *
+ * Code all, or almost all, those modes.*
+ *                                      *
+ * Using wifi, think of a communication *
+ *  protocol to handle mode changing.   *
+ *                                      *
+ * Try receiving data from wifi.        *
+ *                                      *
+ * Implement communication protocol     *
+ *  with wifi.                          *
+ ****************************************/
 
-DMA_ATTR uint8_t led[LED_NUM][4];
 
-const uint8_t START_FRAME[] = {0x00,0x00,0x00,0x00};
-/* LED_FRAM [GLOBAL]  [BLUE]  [GREEN] [RED]
-        [111 + 5 bit] [8 bit] [8 bit] [8 bit]
-*/
-const uint8_t BLUE[] = {0xff, 0xff, 0x00, 0x00};
-const uint8_t GREEN[] = {0xff, 0x00, 0xff, 0x00};
-const uint8_t RED[] = {0xff, 0x00, 0x00, 0xff};
-const uint8_t OFF[] = {0xff, 0x00, 0x00, 0x00};
-const uint8_t WHITE[] = {0xff, 0xff, 0xff, 0xff};
-const uint8_t PURPLE[] = {0xff, 204, 0x00, 125};
-
-spi_device_handle_t apa102_spi;
 
 void app_main()
 {
-    //spi_device_handle_t apa102_spi = {0};
+    APA102_init();
 
-    SPI_init(&apa102_spi, MOSI_PIN, SCLK_PIN, SPI_MASTER_FREQ_20M);
+    xTaskCreate(APA102_simpleColorTransition_task,"simpleColorTransition_task",configMINIMAL_STACK_SIZE,NULL,1,NULL);
 
-    /*  CLEAR ALL LED   */
-    for (int i = LED_NUM; i > 0 ; --i){
-        led[i][0] = 0xFF;
-        led[i][1] = 0x00;
-        led[i][2] = 0x00;
-        led[i][3] = 0x00;
-    }
-    SPI_transmit(apa102_spi, START_FRAME, 4);
-    SPI_transmit(apa102_spi, led, LED_NUM*4);
-    /********************/
+    //APA102_setColor(0xFF,0xFF,0,0,-1,0);
+ /*   while (true)
+    {
 
-    /*  CHASER MODE     */  
+
+    *  CHASER MODE  *
     while(true){
         SPI_transmit(apa102_spi, START_FRAME, 4);
         for (int i = 0; i < LED_NUM; i++){
@@ -53,5 +47,6 @@ void app_main()
             vTaskDelay(10 / portTICK_PERIOD_MS);
         }
     }
-    /********************/
+    ********************
+*/
 }
